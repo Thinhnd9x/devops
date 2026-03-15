@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ecommerce-backend-deployment
+  name: ecommerce-backend-deployment
+  namespace: ecommerce
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25% # So luong Pod moi co the tao them
+      maxUnvaliable: 25% #quy định số Pod cũ có thể bị ngừng cùng lúc.
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: ecommerce-backend-deployment
+  template:
+    metadata:
+      labels:
+        app: ecommerce-backend-deployment
+      namespace: ecommerce
+    spec:
+      containers:
+        - envFrom:
+              - secretRef:
+                  name: ecommerce-backend-database-connection
+                  optional: false
+        - image: sunday888/ecommerce-backend:v2
+          imagePullPolicy: Always
+          name: ecommerce-backend
+          ports:
+            - containerPort: 8080
+              name: tcp
+              protocol: TCP
+          resources:
+            limits:
+              cpu: '2'
+              memory: 1024Mi
+            requests:
+              cpu: '1'
+              memory: 512Mi
+          volumeMounts:
+            - mountPath: /run/src/main/resources/application.properties
+              name: appication-properties-config-volume
+              subPath: application.properties
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: ecommerce-backend-appication-properties-configmap
+          name: appication-properties-config-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecommerce-backend-service
+  namespace: ecommerce
+spec:
+  type: ClusterIP
+  ports:
+    - name: tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: ecommerce-backend-deployment
+  sessionAffinity: None
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ecommerce-backendv-ingress
+  namespace: ecommerce
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api-ecommerce.devopsedu.vn
+      http:
+        paths:
+          - backend:
+              service:
+                name: ecommerce-backend-service
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+
+

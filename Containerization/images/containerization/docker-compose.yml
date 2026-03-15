@@ -1,0 +1,48 @@
+services:
+    vprodb:
+      build:
+          context: ./dbdocker
+      image: sunday888/mydb
+      container_name: vprodb
+      ports:
+        - "3306:3306"
+      volumes:
+        - vprodbdata:/var/lib/mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=vprodbpass
+    vprocache:
+      image: memcached
+      container_name: vprocache01
+      ports:
+        - "11211:11211"
+    vpromq01:
+      image: rabbitmq
+      container_name: vpromq01
+      ports:
+        - "5672:5672"
+      environment:
+        - RABBITMQ_DEFAULT_USER=guest
+        - RABBITMQ_DEFAULT_PASS=guest
+  
+    vproapp:
+      build:
+          context: ./appdocker
+      image: sunday888/myapp
+      container_name: appdocker
+      ports:
+        - "8080:8080"
+      volumes:
+        - vproappdata:/usr/local/tomcat/webapps
+      environment:
+        - MYSQL_ROOT_PASSWORD=vprodbpass
+
+    vproweb:
+      build:
+          context: ./webdocker
+      image: sunday888/myweb
+      container_name: webdocker
+      ports:
+        - "80:80"
+volumes:
+  vprodbdata: {}
+  vproappdata: {}

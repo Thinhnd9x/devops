@@ -1,0 +1,7 @@
+From mysql:8.0.33
+LABEL "Projact"="Containerization"
+LABEL "Author"="Thinhnd"
+
+ENV MYSQL_ROOT_PASSWORD=vprodbpass
+ENV MYSQL_DATABASE="accounts"
+ADD https://raw.githubusercontent.com/hkhcoder/vprofile-project/refs/heads/containers/Docker-files/db/db_backup.sql /docker-entrypoint-initdb.d/db_backup.sql

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: car-ser-deployment
+  name: car-ser-deployment
+  namespace: car-ser
+spec:
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25% # So luong Pod moi co the tao them
+      maxUnvaliable: 25% #quy định số Pod cũ có thể bị ngừng cùng lúc.
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: car-ser-deployment
+  template:
+    metadata:
+      labels:
+        app: car-ser-deployment
+      namespace: car-ser
+    spec:
+      containers:
+        #- image: elroydevops/car-serv
+        - image: nginx
+          imagePullPolicy: Always
+          name: car-ser
+          ports:
+            - containerPort: 80
+              name: tcp
+              protocol: TCP
+
+

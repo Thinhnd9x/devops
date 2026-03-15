@@ -1,0 +1,48 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for post-install
+- name: Install packages on centos
+  yum:
+   name: "{{item}}"
+   state: present
+  when: ansible_distribution == "Centos"
+  loop:
+   - chrony
+   - wget
+   - git
+   - zip
+- name: Install packages on ubuntu
+  apt:
+   name: "{{item}}"
+   state: present
+   update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+  loop:
+   - ntp
+   - wget
+   - git
+   - zip
+- name: Deploy ntp agent conf on Centos
+  template:
+    src: ntpconf_centos.j2
+    dest: /etc/chrony.conf
+    backup: yes
+  when: ansible_distribution == "Centos"
+  notify: #when have a change on temp then handlers restart service ntp
+    - restarted ntp on Centos 
+- name: Deploy ntp agent conf on ubuntu
+  template:
+    src: ntpconf_ubuntu.j2
+    dest: /etc/ntp.conf
+    backup: yes
+  when: ansible_distribution == "Ubuntu"
+  notify: #when have a change on temp then handlers restart service ntp
+    - restarted ntp on Ubuntu
+- name: Copy file
+  copy:
+    src: myfile.txt
+    dest: /tmp/myfile.txt
+- name: Create a folder
+  file:
+    path: "{{mydir}}"
+    state: directory

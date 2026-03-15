@@ -1,0 +1,6 @@
+# helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+# helm repo update
+# helm pull ingress-nginx/ingress-nginx
+# tar -xzf ingress-nginx-4.11.3.tgz
+# kubectl create ns ingress-nginx
+# helm -n ingress-nginx install ingress-nginx -f ingress-nginx/values.yaml ingress-nginx #trong values.yaml, type onpremise: nodeport, type cloud: loadbalance

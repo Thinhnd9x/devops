@@ -1,0 +1,50 @@
+---
+- name: Provisioning server
+  hosts: all
+  become: yes
+  tasks:
+   - name: Install packages on centos
+     yum:
+      name: "{{item}}"
+      state: present
+     when: ansible_distribution == "Centos"
+     loop:
+      - chrony
+      - wget
+      - git
+      - zip
+   - name: Install packages on ubuntu
+     apt:
+      name: "{{item}}"
+      state: present
+      update_cache: yes
+     when: ansible_distribution == "Ubuntu"
+     loop:
+      - ntp
+      - wget
+      - git
+      - zip
+   - name: Deploy ntp agent conf
+     template:
+       src: template/ntpconf_centos
+       dest: /etc/chrony.conf
+       backup: yes
+     when: ansible_distribution == "Centos"
+   - name: Deploy ntp agent conf on ubuntu
+     template:
+       src: template/ntpconf_ubuntu
+       dest: /etc/ntp.conf
+       backup: yes
+     when: ansible_distribution == "Ubuntu"
+   - name: restarted ntp on Centos 
+     service:
+      name: chrony
+      state: restarted
+      enabled: yes
+     when: ansible_distribution == "Centos"
+   - name: restarted ntp on Ubuntu 
+     service:
+      name: ntp
+      state: restarted
+      enabled: yes
+     when: ansible_distribution == "Ubuntu"

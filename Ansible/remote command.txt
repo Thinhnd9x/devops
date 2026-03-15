@@ -1,0 +1,3 @@
+ansible webserver -m ansible.builtin.yum -a "name=httpd state=present" -i inventory --become //install httpd on group webserver
+ansible webserver -m ansible.builtin.service -a "name=httpd state=started enabled=yes" -i inventory --become //start & enable httpd
+ansible webserver -m ansible.builtin.copy -a "src=index.html dest=/var/www/html/index.html" -i inventory --become //scp file to group webserver

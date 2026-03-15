@@ -1,0 +1,43 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.define "scriptbox" do |scriptbox| #grafana
+    scriptbox.vm.box = "hashicorp-education/ubuntu-24-04"
+        scriptbox.vm.hostname = "grafana"
+        scriptbox.vm.network "private_network", ip: "192.168.56.36"
+  end
+
+    config.vm.define "web01" do |web01| #Loki
+    web01.vm.box = "hashicorp-education/ubuntu-24-04"
+        web01.vm.hostname = "Loki"
+        web01.vm.network "private_network", ip: "192.168.56.37"
+        web01.vm.provider "virtualbox" do |vb|
+        vb.memory = "1024"
+        vb.cpus = 2
+        end
+    end
+
+  config.vm.define "web02" do |web02| #prometheus
+    web02.vm.box = "hashicorp-education/ubuntu-24-04"
+        web02.vm.hostname = "prometheus"
+        web02.vm.network "private_network", ip: "192.168.56.38"
+        web02.vm.provider "virtualbox" do |vb|
+        vb.memory = "4500"
+        vb.cpus = 4
+        end
+
+  end
+  config.vm.define "webserver" do |webserver|
+    webserver.vm.box = "hashicorp-education/ubuntu-24-04"
+        webserver.vm.hostname = "webserver"
+        webserver.vm.network "private_network", ip: "192.168.56.39"
+        webserver.vm.network "forwarded_port", guest: 22, host: 2225
+        webserver.vm.provider "virtualbox" do |vb|
+        vb.memory = "1024"
+        vb.cpus = 2
+        end
+    end
+
+end
+#vagrant up web02; vagrant ssh web02
+#vagrant up scriptbox; vagrant ssh scriptbox
+#vagrant up webserver; vagrant ssh webserver

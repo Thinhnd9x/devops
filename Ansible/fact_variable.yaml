@@ -1,0 +1,10 @@
+---
+- name: print fact
+  hosts: db
+  tasks:
+   - name: print OS
+     debug: 
+      var: ansible_distribution
+   - name: print processor
+     debug:
+      var: ansible_processor[2]
