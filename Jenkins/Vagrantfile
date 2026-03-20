@@ -1,0 +1,29 @@
+Vagrant.configure("2") do |config|
+
+
+    config.vm.define "jenkins" do |jenkins|
+    jenkins.vm.box = "ubuntu-thinhnd"
+        jenkins.vm.hostname = "jenkins"
+        jenkins.vm.network "private_network", ip: "192.168.56.37"
+        jenkins.vm.provider "virtualbox" do |vb|
+        vb.memory = "4096"
+        vb.cpus = 3
+        end
+    end
+
+    config.vm.define "node" do |node|
+    node.vm.box = "ubuntu-thinhnd"
+        node.vm.hostname = "node"
+        node.vm.network "private_network", ip: "192.168.56.38"
+        node.vm.provider "virtualbox" do |vb|
+        vb.memory = "4096"
+        vb.cpus = 3
+        end
+    end
+
+  
+
+end
+#vagrant up web02; vagrant ssh web02
+#vagrant up scriptbox; vagrant ssh scriptbox
+#vagrant up webserver; vagrant ssh webserver
