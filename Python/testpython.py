@@ -33,7 +33,7 @@ while x <= 10:
     print(f"Value of is {i}") """
 
 """ import random
-thinh = ["dep trai", "giau co", "dieu nghe", "gioi dang", "ngau"]
+thinh = ["hand", "Devops", "linux", "lab", "docker"]
 random.shuffle(thinh)
 print(thinh)
 choice = random.choice(thinh)
