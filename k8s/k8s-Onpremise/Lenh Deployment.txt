@@ -39,4 +39,11 @@ Liệt kê các Pod được tạo bởi một Deployment cụ thể
 Cập nhật biến môi trường cho các container trong Deployment
 
 # kubectl set env deployment/<ten-deployment> <key>=<value>
- 
+
+Debug Pod
+
+# kubectl describe pod <Ten-Pod>
+
+# kubectl get pod <Ten-Pod> -o wide 
+
+# kubectl logs -n <Ten NS> <Ten Pod>

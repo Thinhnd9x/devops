@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vprodb
+  labels:
+    app: vprodb
+spec:
+  selector:
+    matchLabels:
+      app: vprodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vprodb
+    spec:
+      containers:
+      - name: vprodb
+        image: vprocontainers/vprofiledb
+        ports:
+        - name: vprodb-port
+          containerPort: 3306
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - "mysqladmin ping -h 127.0.0.1 -uroot -prootpassword"
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 3
+        env:
+         - name: MYSQL_ROOT_PASSWORD
+           valueFrom:
+             secretKeyRef:
+               name: app-secret
+               key: db-pass
+        volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql    
+      volumes: 
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: ebs-mysql-pv-claim
+      initContainers:
+        - name: busybox
+          image: busybox:latest
+          command: ["sh", "-c", "rm -rf /var/lib/mysql/lost+found"]
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql

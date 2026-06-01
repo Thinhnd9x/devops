@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vproapp
+  labels: 
+    app: vproapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vproapp
+  template:
+    metadata:
+      labels:
+        app: vproapp
+    spec:
+      containers:
+      - name: vproapp
+        image: vprocontainers/vprofileapp
+        imagePullPolicy: Always
+        ports:
+        - name: vproapp-port
+          containerPort: 8080
+      initContainers:
+      - name: wait-for-mysql
+        image: mysql:8.0
+        command: ['sh', '-c', 'until mysqladmin ping -h vprodb --silent; do echo waiting for mysql; sleep 5; done']
