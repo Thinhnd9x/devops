@@ -1,0 +1,31 @@
+defaultUser: guest
+app:
+  image: vprocontainers/vprofileapp
+  tag: latest
+  replicas: 1
+  containerPort: 8080
+  servicePort: 8080
+db:
+  image: vprocontainers/vprofiledb
+  tag: latest
+  replicas: 1
+  containerPort: 3306
+  servicePort: 3306
+  claimName: ebs-mysql-pv-claim
+memcached:
+  image: memcached
+  tag: latest
+  replicas: 1
+  containerPort: 11211
+  servicePort: 11211
+rabbitmq:
+  image: rabbitmq
+  tag: latest
+  replicas: 1
+  containerPort: 5672
+  servicePort: 5672
+ingress:
+  enabled: true
+  host: thinhnd.qzz.io
+  servicePort: 8080
+
